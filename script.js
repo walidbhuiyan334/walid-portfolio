@@ -35,10 +35,6 @@ const typedTextSpan = document.querySelector(".typed-text");
 const textArray = [
     "Full Stack MERN Developer",
     "Professional Graphic Designer",
-    "Video Editor",
-    "CSE Student",
-    "Cybersecurity Enthusiast",
-    "Problem Solver"
 ];
 const typingDelay = 100;
 const erasingDelay = 50;
