@@ -342,7 +342,7 @@ class ProjectModal {
             ]
         };
 
-        // --- 2. SET SPECIFIC PROJECT DATA (নাম অনুযায়ী ডাটা পরিবর্তন) ---
+        // --- 2. SET SPECIFIC PROJECT DATA (নাম অনুযায়ী ডাটা পরিবর্তন) ---
         
         // প্রজেক্ট ১: Bonggo IT Institute
         if (title.includes('Bonggo IT Institute')) {
@@ -763,6 +763,7 @@ class ProjectModal {
         document.head.appendChild(style);
     }
 }
+
 // ===== SMART CONTACT FORM =====
 class ContactForm {
     constructor() {
@@ -795,44 +796,52 @@ class ContactForm {
     }
     
     async handleSubmit(e) {
-        e.preventDefault();
+    e.preventDefault();
+    
+    const formData = this.getFormData();
+    
+    if (!this.validateForm(formData)) {
+        return;
+    }
+    
+    const submitBtn = this.form.querySelector('button[type="submit"]');
+    const originalContent = submitBtn.innerHTML;
+    
+    // বাটনটি ডিজেবল করা এবং এনিমেশন দেখানো
+    this.setLoadingState(submitBtn, true);
+    
+    try {
+        await this.submitToAPI(formData);
         
-        const formData = this.getFormData();
+        // সাকসেস মেসেজ দেখানোর আগে ফর্মটি স্মুথলি পরিষ্কার করা
+        this.form.style.opacity = '0.5'; 
         
-        if (!this.validateForm(formData)) {
-            return;
-        }
-        
-        const submitBtn = this.form.querySelector('button[type="submit"]');
-        const originalContent = submitBtn.innerHTML;
-        
-        this.setLoadingState(submitBtn, true);
-        
-        try {
-            // Simulate API call with modern fetch
-            await this.submitToAPI(formData);
-            this.showMessage('Message sent successfully! I\'ll respond within 24 hours.', 'success');
+        setTimeout(() => {
+            this.showMessage('✨ Success! Your message is on its way.', 'success');
             this.form.reset();
             this.resetFieldStates();
-        } catch (error) {
-            this.showMessage('Failed to send message. Please try again.', 'error');
-        } finally {
-            this.setLoadingState(submitBtn, false, originalContent);
-        }
+            this.form.style.opacity = '1';
+        }, 500);
+
+    } catch (error) {
+        this.showMessage('Oops! Something went wrong. Please try again.', 'error');
+    } finally {
+        this.setLoadingState(submitBtn, false, originalContent);
     }
+}
     
     getFormData() {
         return {
-            name: this.form.querySelector('#name')?.value.trim() || '',
-            email: this.form.querySelector('#email')?.value.trim() || '',
-            subject: this.form.querySelector('#subject')?.value.trim() || '',
-            message: this.form.querySelector('#message')?.value.trim() || ''
+            name: this.form.querySelector('#name')?.value.trim() || this.form.querySelector('[name="Name"]')?.value.trim() || '',
+            email: this.form.querySelector('#email')?.value.trim() || this.form.querySelector('[name="Email"]')?.value.trim() || '',
+            subject: this.form.querySelector('#subject')?.value.trim() || this.form.querySelector('[name="Subject"]')?.value.trim() || 'Portfolio Contact',
+            message: this.form.querySelector('#message')?.value.trim() || this.form.querySelector('[name="Message"]')?.value.trim() || ''
         };
     }
     
     validateForm(data) {
-        if (!data.name || !data.email || !data.subject || !data.message) {
-            this.showMessage('Please fill in all fields', 'error');
+        if (!data.name || !data.email || !data.message) {
+            this.showMessage('Please fill in all required fields', 'error');
             return false;
         }
         
@@ -849,13 +858,33 @@ class ContactForm {
     }
     
     async submitToAPI(data) {
-        return new Promise(resolve => {
-            setTimeout(() => {
-                console.log('Form submitted:', data);
-                resolve({ success: true });
-            }, CONFIG.formSubmitDelay);
+        // Apps Script এর জন্য ডাটা URLSearchParams এ কনভার্ট করতে হয়
+        const formData = new URLSearchParams();
+        formData.append("name", data.name);
+        formData.append("email", data.email);
+        formData.append("subject", data.subject);
+        formData.append("message", data.message);
+
+        // ⚠️ আপনার Google Apps Script থেকে পাওয়া Web App URL টি নিচের লাইনে বসান
+        const scriptURL = "https://script.google.com/macros/s/AKfycbxyZlTHqGY2wim9qt0gHD00_fT72-eqPwgwYu6ZUnQARIEn1ayt9yvTPeN8JyuD6xX2Zg/exec"; 
+
+        try {
+        const response = await fetch(scriptURL, {
+            method: "POST",
+            body: formData,
+            mode: 'no-cors' // এটি ব্রাউজারের CORS এরর এড়িয়ে ডাটা পাঠাতে সাহায্য করবে
         });
+
+        // যেহেতু 'no-cors' মোডে রেসপন্স চেক করা যায় না, 
+        // এবং আপনার ইমেইল আসছে, তাই আমরা সরাসরি Success রিটার্ন করব।
+        console.log('Request sent to Google Apps Script');
+        return { success: true };
+
+    } catch (error) {
+        console.error("Error sending message:", error);
+        throw error;
     }
+}
     
     setLoadingState(button, isLoading, originalContent = '') {
         button.disabled = isLoading;
@@ -1170,7 +1199,6 @@ const handleResize = debounce(() => {
 }, 250);
 
 // About section tabs functionality
-// About Tabs Functionality
 document.addEventListener('DOMContentLoaded', function() {
     const tabBtns = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
@@ -1238,8 +1266,8 @@ class LoadMoreProjects {
     constructor() {
         this.grid = document.getElementById('coding-projects-grid');
         this.loadMoreBtn = document.getElementById('load-more-btn');
-        this.visibleCount = 3; // শুরুতে কয়টা দেখাবে
-        this.increment = 3; // ক্লিক করলে কয়টা বাড়বে
+        this.visibleCount = 3; // শুরুতে কয়টা দেখাবে
+        this.increment = 3; // ক্লিক করলে কয়টা বাড়বে
         
         if(this.grid && this.loadMoreBtn) {
             this.cards = Array.from(this.grid.querySelectorAll('.project-card'));
@@ -1269,7 +1297,7 @@ class LoadMoreProjects {
             }
         });
         
-        // যদি সবগুলো প্রজেক্ট দেখা হয়ে যায়, বাটন হাইড করে দাও
+        // যদি সবগুলো প্রজেক্ট দেখা হয়ে যায়, বাটন হাইড করে দাও
         if (this.visibleCount >= this.cards.length) {
             this.loadMoreBtn.style.display = 'none';
         }
@@ -1324,7 +1352,7 @@ class LoadMoreGrid {
             }
         });
         
-        // সব দেখা হয়ে গেলে বাটন গায়েব হয়ে যাবে
+        // সব দেখা হয়ে গেলে বাটন গায়েব হয়ে যাবে
         if (this.visibleCount >= this.cards.length) {
             this.loadMoreBtn.style.display = 'none';
         }
@@ -1343,9 +1371,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const visitorAnalytics = new VisitorAnalytics();
     const clipboardManager = new ClipboardManager();
     const lazyLoader = new LazyLoader();
-    const loadMoreProjects = new LoadMoreProjects('coding-projects-grid', 'load-more-btn', 3, 3,3,3 );
-    new LoadMoreGrid('graphic-designs-grid', 'load-more-graphics-btn', 8, 6, 6, 6);
-
+    
+    // ✅ Load More গ্রিডগুলো একদম সঠিকভাবে কল করা হলো
+    // Web Development: ৩টা দেখাবে, ক্লিক করলে ৩টা বাড়বে
+    new LoadMoreGrid('coding-projects-grid', 'load-more-btn', 3, 3,3,3);
+    
+    // Graphic Design: ৮টা দেখাবে, ক্লিক করলে ৮টা বাড়বে
+    new LoadMoreGrid('graphic-designs-grid', 'load-more-graphics-btn', 8, 6,6,6);
     
     // Update footer year
     updateFooterYear();
