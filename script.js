@@ -99,7 +99,6 @@ class TypingEffect {
         this.texts = [
             "Full Stack MERN Developer",
             "Professional Graphic Designer",
-            "Video Editor",
         ];
         this.currentIndex = 0;
         this.charIndex = 0;
@@ -325,14 +324,100 @@ class ProjectModal {
         const card = e.target.closest('.project-card');
         if (!card) return;
         
+        const title = card.querySelector('.project-title')?.textContent || 'Project Title';
+        
+        // --- 1. SET DEFAULT DATA (সব প্রজেক্টের জন্য বেসিক ডাটা) ---
         this.currentProject = {
-            title: card.querySelector('.project-title')?.textContent || 'Project Title',
+            title: title,
             description: card.querySelector('.project-desc')?.textContent || '',
             tags: Array.from(card.querySelectorAll('.tag')).map(tag => tag.textContent),
             image: card.querySelector('img')?.src || '',
-            github: 'https://github.com/walidbhuiyan334',
-            demo: '#'
+            github: 'https://github.com/walidbhuiyan334', // আপনার ডিফল্ট গিটহাব 
+            demo: '#', 
+            features: [
+                'Responsive Design',
+                'Clean Architecture',
+                'Performance Optimized',
+                'Cross-browser Compatible'
+            ]
         };
+
+        // --- 2. SET SPECIFIC PROJECT DATA (নাম অনুযায়ী ডাটা পরিবর্তন) ---
+        
+        // প্রজেক্ট ১: Bonggo IT Institute
+        if (title.includes('Bonggo IT Institute')) {
+            this.currentProject.description = `Bonggo IT Institute is a comprehensive, high-performance E-learning platform engineered with the MERN stack. Designed to deliver a seamless educational experience, it connects learners with expert mentors through dynamic courses and live classes. The platform features robust role-based dashboards (Admin, Instructor, Student), secure enrollment processes, and an enterprise-grade automated invoicing system, ensuring a premium user experience from onboarding to graduation.`;
+            this.currentProject.github = 'https://github.com/walidbhuiyan334/bongo-it-institute-lms';
+            this.currentProject.demo = 'https://bongo-it-institute.vercel.app';
+            this.currentProject.features = [
+                'Continuous Feature Development',
+                'Role-Based Access Control (RBAC) with JWT',
+                'Dynamic RESTful APIs for courses & enrollments',
+                'Enterprise-Grade Automated A4 PDF Invoicing',
+                'Custom CSS "PAID" stamp rendering',
+                'Seamless SPA routing with Vercel configuration',
+                'Premium dark-themed UI/UX using Tailwind CSS'
+            ];
+        } 
+        
+        // প্রজেক্ট: Elite Learner Academy
+        else if (title.includes('Elite Learner Academy')) {
+            this.currentProject.description = `A professional educational platform designed and developed for Elite Learner Academy. The website serves as a digital hub for students to explore specialized courses like Basic English and IELTS preparation. Built with a focus on clean aesthetics and responsive design, it provides an intuitive user experience for prospective learners.`;
+            this.currentProject.github = 'https://github.com/walidbhuiyan334/ELA-WEBSITE';
+            this.currentProject.demo = '#';
+            this.currentProject.features = [
+                'Dynamic Course Catalog (IELTS & Basic English)',
+                'Continuous Feature Development',
+                'Responsive & Modern Educational UI',
+                'Student Inquiry & Contact Forms',
+                'SEO Optimized Architecture',
+                'Fast Loading Performance'
+            ];
+        }
+
+        // প্রজেক্ট: Personal Portfolio Website
+        else if (title.includes('Personal Portfolio') || title.includes('Portfolio Website')) {
+            this.currentProject.description = `A modern, fully responsive personal portfolio website built from scratch. It features a sleek dark-themed design, glassmorphism UI elements, smooth scrolling animations, and a dynamic project modal system. This project perfectly highlights my front-end development skills and strict attention to modern UI/UX details.`;
+            this.currentProject.github = 'https://github.com/walidbhuiyan334/walid-portfolio';
+            this.currentProject.demo = '#';
+            this.currentProject.features = [
+                'Advanced Glassmorphism UI Design',
+                'Dynamic Modal System with pure JavaScript',
+                'Smooth Scrolling & Intersection Observer Animations',
+                'Interactive Smart Contact Form',
+                'Fully Responsive & Mobile-First Layout',
+                '100% Custom CSS without external frameworks'
+            ];
+        }
+
+        // প্রজেক্ট: Modern E-Commerce Platform
+        else if (title.includes('E-Commerce Platform') || title.includes('E-Commerce')) {
+            this.currentProject.description = `🚧 <strong>[Currently in Early Development]</strong> <br><br> A modern, full-stack e-commerce web application that I have recently started building. The goal of this project is to create a highly scalable shopping platform with a seamless user experience. It will eventually feature a dynamic product catalog, advanced filtering, secure user authentication, shopping cart management, and payment gateway integration.`;
+            this.currentProject.github = 'https://github.com/walidbhuiyan334/e-commerce';
+            this.currentProject.demo = '#';
+            this.currentProject.features = [
+                'Responsive Product Catalog (In Progress)',
+                'Shopping Cart & State Management (Upcoming)',
+                'User Authentication System (Upcoming)',
+                'Secure Checkout & Payment Integration (Planned)',
+                'Admin Dashboard for Inventory (Planned)'
+            ];
+        }
+
+        // প্রজেক্ট: Mama's Restaurant Management System
+        else if (title.includes("Mama's Restaurant") || title.includes('Restaurant Management')) {
+            this.currentProject.description = `A robust console-based restaurant management system developed entirely in C++. This project was built to practically apply Object-Oriented Programming (OOP) concepts and Data Structures. It efficiently handles dynamic menu management, customer order processing, and automated bill calculations including taxes and discounts.`;
+            this.currentProject.github = 'https://github.com/walidbhuiyan334/Mama-s-Restaurant-Management-System'; 
+            this.currentProject.demo = '#'; 
+            this.currentProject.features = [
+                'Object-Oriented Architecture (OOP)',
+                'Interactive Console-based User Interface',
+                'Dynamic Menu & Order Management',
+                'Automated Billing & Tax Calculation',
+                'Efficient Data Handling using C++ STL',
+                'Clean Code with proper memory management'
+            ];
+        }
         
         this.renderModal();
     }
@@ -373,10 +458,9 @@ class ProjectModal {
                     <div class="modal-features">
                         <h3>Key Features</h3>
                         <ul class="feature-list">
-                            <li><i class="fas fa-check-circle"></i> Responsive Design</li>
-                            <li><i class="fas fa-check-circle"></i> Clean Architecture</li>
-                            <li><i class="fas fa-check-circle"></i> Performance Optimized</li>
-                            <li><i class="fas fa-check-circle"></i> Cross-browser Compatible</li>
+                            ${this.currentProject.features.map(feature => 
+                                `<li><i class="fas fa-check-circle"></i> ${feature}</li>`
+                            ).join('')}
                         </ul>
                     </div>
                     
@@ -385,10 +469,12 @@ class ProjectModal {
                             <i class="fab fa-github"></i>
                             <span>View Code</span>
                         </a>
+                        ${this.currentProject.demo !== '#' ? `
                         <a href="${this.currentProject.demo}" target="_blank" class="modern-btn secondary">
                             <i class="fas fa-external-link-alt"></i>
                             <span>Live Demo</span>
                         </a>
+                        ` : ''}
                     </div>
                 </div>
             </div>
@@ -397,7 +483,11 @@ class ProjectModal {
         document.body.appendChild(this.modal);
         document.body.style.overflow = 'hidden';
         
-        this.modal.classList.add('active');
+        // Trigger reflow for animation
+        setTimeout(() => {
+            this.modal.classList.add('active');
+        }, 10);
+        
         this.setupModalEvents();
     }
     
@@ -418,13 +508,18 @@ class ProjectModal {
     closeModal() {
         this.modal.classList.remove('active');
         setTimeout(() => {
-            this.modal.remove();
+            if(this.modal && this.modal.parentNode) {
+                this.modal.remove();
+            }
             document.body.style.overflow = 'auto';
         }, 300);
     }
     
     addModalStyles() {
+        if (document.getElementById('modal-styles')) return; // Prevent duplicate styles
+
         const style = document.createElement('style');
+        style.id = 'modal-styles';
         style.textContent = `
             .glass-modal {
                 position: fixed;
@@ -543,6 +638,13 @@ class ProjectModal {
                 margin-bottom: 20px;
             }
             
+            .modal-tags {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+
             .modern-tag {
                 padding: 6px 15px;
                 background: rgba(0, 210, 133, 0.1);
@@ -577,6 +679,7 @@ class ProjectModal {
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
                 gap: 15px;
+                padding-left: 0;
             }
             
             .feature-list li {
@@ -590,6 +693,12 @@ class ProjectModal {
                 color: var(--primary-color);
             }
             
+            .modal-actions {
+                display: flex;
+                gap: 15px;
+                flex-wrap: wrap;
+            }
+
             .modern-btn {
                 display: inline-flex;
                 align-items: center;
@@ -634,11 +743,26 @@ class ProjectModal {
                     grid-template-columns: 1fr;
                 }
             }
+            
+            /* Custom scrollbar for modal */
+            .modal-container::-webkit-scrollbar {
+                width: 6px;
+            }
+            .modal-container::-webkit-scrollbar-track {
+                background: rgba(0,0,0,0.1);
+                border-radius: 0 20px 20px 0;
+            }
+            .modal-container::-webkit-scrollbar-thumb {
+                background: rgba(255,255,255,0.2);
+                border-radius: 10px;
+            }
+            .modal-container::-webkit-scrollbar-thumb:hover {
+                background: var(--primary-color);
+            }
         `;
         document.head.appendChild(style);
     }
 }
-
 // ===== SMART CONTACT FORM =====
 class ContactForm {
     constructor() {
@@ -1109,6 +1233,104 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// ===== LOAD MORE PROJECTS LOGIC =====
+class LoadMoreProjects {
+    constructor() {
+        this.grid = document.getElementById('coding-projects-grid');
+        this.loadMoreBtn = document.getElementById('load-more-btn');
+        this.visibleCount = 3; // শুরুতে কয়টা দেখাবে
+        this.increment = 3; // ক্লিক করলে কয়টা বাড়বে
+        
+        if(this.grid && this.loadMoreBtn) {
+            this.cards = Array.from(this.grid.querySelectorAll('.project-card'));
+            this.init();
+        }
+    }
+    
+    init() {
+        // শুরুতে প্রথম ৩টা বাদে বাকিগুলো হাইড করে দাও
+        this.updateVisibility();
+        
+        // বাটনে ক্লিক ইভেন্ট
+        this.loadMoreBtn.addEventListener('click', () => {
+            this.visibleCount += this.increment;
+            this.updateVisibility();
+        });
+    }
+    
+    updateVisibility() {
+        this.cards.forEach((card, index) => {
+            if (index < this.visibleCount) {
+                card.style.display = 'block';
+                card.classList.add('show');
+            } else {
+                card.style.display = 'none';
+                card.classList.remove('show');
+            }
+        });
+        
+        // যদি সবগুলো প্রজেক্ট দেখা হয়ে যায়, বাটন হাইড করে দাও
+        if (this.visibleCount >= this.cards.length) {
+            this.loadMoreBtn.style.display = 'none';
+        }
+    }
+}
+
+// ===== REUSABLE LOAD MORE LOGIC =====
+class LoadMoreGrid {
+    constructor(gridId, btnId, initialCount, increment) {
+        this.grid = document.getElementById(gridId);
+        this.loadMoreBtn = document.getElementById(btnId);
+        this.visibleCount = initialCount;
+        this.increment = increment;
+        
+        if(this.grid && this.loadMoreBtn) {
+            // গ্রিডের ভেতরের সব কার্ড সিলেক্ট করা
+            this.cards = Array.from(this.grid.children);
+            
+            // প্রথমে সব হাইড করা
+            this.cards.forEach(card => {
+                card.style.display = 'none';
+                card.style.opacity = '0';
+            });
+            
+            this.init();
+        }
+    }
+    
+    init() {
+        this.updateVisibility();
+        
+        // বাটনে ক্লিক ইভেন্ট
+        this.loadMoreBtn.addEventListener('click', () => {
+            this.visibleCount += this.increment;
+            this.updateVisibility();
+        });
+    }
+    
+    updateVisibility() {
+        this.cards.forEach((card, index) => {
+            if (index < this.visibleCount) {
+                card.style.display = 'inline-block'; // Masonry গ্রিডের জন্য এটি বেস্ট
+                card.style.width = '100%'; 
+                
+                // হালকা ডিলের সাথে অ্যানিমেশন অ্যাড করা
+                setTimeout(() => {
+                    card.classList.add('show');
+                }, 50);
+            } else {
+                card.style.display = 'none';
+                card.classList.remove('show');
+            }
+        });
+        
+        // সব দেখা হয়ে গেলে বাটন গায়েব হয়ে যাবে
+        if (this.visibleCount >= this.cards.length) {
+            this.loadMoreBtn.style.display = 'none';
+        }
+    }
+}
+
 // ===== INITIALIZE EVERYTHING =====
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize all modern components
@@ -1121,6 +1343,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const visitorAnalytics = new VisitorAnalytics();
     const clipboardManager = new ClipboardManager();
     const lazyLoader = new LazyLoader();
+    const loadMoreProjects = new LoadMoreProjects('coding-projects-grid', 'load-more-btn', 3, 3,3,3 );
+    new LoadMoreGrid('graphic-designs-grid', 'load-more-graphics-btn', 8, 6, 6, 6);
+
     
     // Update footer year
     updateFooterYear();

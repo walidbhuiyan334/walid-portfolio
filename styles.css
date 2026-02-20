@@ -37,7 +37,7 @@ body {
 }
 
 .container { 
-    max-width: 1140px; 
+    max-width: 1240px; 
     margin: 0 auto; 
     padding: 0 20px; 
     width: 100%;
@@ -986,6 +986,113 @@ h3 {
     box-shadow: 0 4px 12px rgba(0, 210, 133, 0.15);
 }
 
+/* ================================================= */
+    /* Graphic Design Portfolio - Behance Style Masonry  */
+    /* ================================================= */
+    
+    .behance-grid {
+        /* CSS Columns use kora hoyeche jeno Behance er moto Masonry layout hoy */
+        column-count: 3;
+        column-gap: 30px;
+        margin-top: 50px;
+    }
+
+    /* Tablet er jonno 2 column */
+    @media (max-width: 991px) {
+        .behance-grid {
+            column-count: 2;
+        }
+    }
+
+    /* Mobile er jonno 1 column */
+    @media (max-width: 768px) {
+        .behance-grid {
+            column-count: 1;
+        }
+    }
+
+    .design-card {
+        break-inside: avoid; /* Image jeno majhkhan theke kete na jay */
+        margin-bottom: 30px;
+        position: relative;
+        border-radius: 12px;
+        overflow: hidden;
+        cursor: pointer;
+        background: #1a1a1a;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .design-card img {
+        width: 100%;
+        height: auto; /* Height auto rakhay image er original aspect ratio thik thakbe */
+        display: block;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: transform;
+    }
+
+    .design-card:hover img {
+        transform: scale(1.05); /* Behance er moto smooth zoom */
+    }
+
+    .design-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.3) 40%, transparent 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 25px;
+        opacity: 0;
+        transition: all 0.4s ease;
+    }
+
+    .design-card:hover .design-overlay {
+        opacity: 1;
+    }
+
+    .design-overlay h4 {
+        color: #fff;
+        font-size: 1.25rem;
+        margin-bottom: 6px;
+        font-weight: 700;
+        transform: translateY(15px);
+        transition: transform 0.4s ease;
+    }
+
+    .design-overlay p {
+        color: var(--primary-color, #00ffaa);
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transform: translateY(15px);
+        transition: transform 0.4s ease 0.1s;
+    }
+
+    .design-card:hover .design-overlay h4,
+    .design-card:hover .design-overlay p {
+        transform: translateY(0);
+    }
+/* Animation class for both projects and graphics */
+    .project-card.show, 
+    .design-card.show {
+        animation: fadeInScale 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        opacity: 1 !important;
+    }
+
+    @keyframes fadeInScale {
+        from { 
+            opacity: 0; 
+            transform: translateY(30px) scale(0.95); 
+        }
+        to { 
+            opacity: 1; 
+            transform: translateY(0) scale(1); 
+        }
+    }
+
+
+
 /* ===== TESTIMONIALS ===== */
 .testimonials-grid { 
     display: grid; 
@@ -1000,6 +1107,7 @@ h3 {
     border: 1px solid var(--border-color); 
     position: relative;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    
 }
 
 .testimonial-header { 
@@ -1010,8 +1118,8 @@ h3 {
 }
 
 .testimonial-avatar { 
-    width: 50px; 
-    height: 50px; 
+    width: 60px; 
+    height: 60px; 
     background: #333; 
     border-radius: 50%; 
     display: flex; 
